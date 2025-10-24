@@ -21,7 +21,7 @@ namespace Kontaktkatalogen.tests
 
             var contact2 = new Contact { Name = "Bob", Email = "" };
 
-            Assert.Throws<InvalidContactException>(() => validator.Validate(contact2));
+            Assert.Throws<InvalidExceptions.InvalidContactException>(() => validator.Validate(contact2));
         }
     }
 }

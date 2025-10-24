@@ -13,8 +13,7 @@ namespace Kontaktkatalogen.Menu
     {
         public static void Menu(ContactService service)
         {
-            //Starting on contact ID 1
-            int contactId = 1;
+            int contactId = 0;
 
             //Menu options for the main menu of the contact catalogue
             List<string> menuOptions = new List<string>
@@ -75,13 +74,13 @@ namespace Kontaktkatalogen.Menu
                                         }
                                 }
                             }
-                            service.AddContact(new Contact { Id = contactId++, Name = nameInput, Email = emailInput, Tags = tagList });
+                            service.AddContact(contactId++, new Contact {Name = nameInput, Email = emailInput, Tags = tagList });
                             break;
                         }
                     //List contacts option
                     case 2:
                         {
-                            //service.ListContacts();
+                            service.ListContacts();
                             break;
                         }
                     //Search for a contact option

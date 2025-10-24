@@ -9,7 +9,8 @@ namespace Kontaktkatalogen.Repositories
 {
     public interface IContactCatalogue
     {
-        void Save(Contact contact);
-        IEnumerable<Contact> GetAll();
+        int Count { get; }
+        void Save(int id, Contact contact);
+        public Dictionary<int, Contact> GetDictionary();
     }
 }

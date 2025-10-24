@@ -171,13 +171,6 @@ namespace Kontaktkatalogen.ConsoleUI
                 return false;
             }
 
-            //Check if a welcome text type and if string is empty
-            if (welcomeText == null || welcomeText.GetType() != typeof(string) || string.IsNullOrWhiteSpace(welcomeText))
-            {
-                Console.WriteLine("\nThere is no welcoming text, please try again\n");
-                return false;
-            }
-
             //Check if menu is too big
             if (menuOptions.Count > 9)
             {

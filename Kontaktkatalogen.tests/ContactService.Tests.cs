@@ -18,13 +18,15 @@ namespace Kontaktkatalogen.tests
         [Fact]
         public void LogsWarning_WhenValidationFails()
         {
+            int contactId = 0;
             var repoMock = new Mock<IContactCatalogue>();
             var loggerMock = new Mock<ILogger<ContactService>>();
-            var validator = new ContactValidator();
-            var service = new ContactService(repoMock.Object, validator, loggerMock.Object);
+            var contactValidator = new ContactValidator();
+            var catalogueValidator = new ContactCatalogueValidator();
+            var service = new ContactService(repoMock.Object, contactValidator, catalogueValidator, loggerMock.Object);
 
             var invalidContact = new Contact { Name = "", Email = "test@example.com" };
-            service.AddContact(invalidContact);
+            service.AddContact(contactId, invalidContact);
 
             loggerMock.Verify(
                 x => x.Log(

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 // Hur hjälper HashSet<<string> till att undvika dubletter?
 // Vad lärde du om LINQ och testbar kod?
 
+//A dictionary was used to save contact id as key and the contact class as value to simplify the implementation of the "list contacts" feature.
+
 namespace Kontaktkatalogen
 {
     internal class Program
@@ -22,10 +24,11 @@ namespace Kontaktkatalogen
                 builder.AddConsole();
             });
             var contactLogger = loggerFactory.CreateLogger<ContactService>();
-            var catalogue = new InMemoryContactCatalogue();
-            var validator = new ContactValidator();
+            var catalogue = new ContactCatalogue();
+            var contactValidator = new ContactValidator();
+            var catalogueValidator = new ContactCatalogueValidator();
 
-            var service = new ContactService(catalogue, validator, contactLogger);  
+            var service = new ContactService(catalogue, contactValidator, catalogueValidator, contactLogger);  
             
             //Launching the main menu
             MainMenu.Menu(service);

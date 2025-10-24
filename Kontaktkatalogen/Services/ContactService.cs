@@ -32,14 +32,17 @@ namespace Kontaktkatalogen.Services
             {
                 _validator.Validate(contact);
                 _catalogue.Save(contact);
-                _logger.LogInformation("Contact saved: {Name}", contact.Name);
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                _logger.LogInformation("Contact '{Name}' has been saved successfully.", contact.Name);
             }
             catch (InvalidContactException ex)
             {
-                _logger.LogWarning(ex, "Validation error for contact: {Email}", contact.Email);
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                _logger.LogWarning("Validation failed: {Message}", ex.Message);
             }
             catch (Exception ex)
             {
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogError(ex, "Unknown error occurred while attempting to save contact.");
             }
         }

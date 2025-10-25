@@ -16,5 +16,14 @@ namespace Kontaktkatalogen.Validators
             if (contactCatalogue.Count == 0 || contactCatalogue == null)
                 throw new InvalidExceptions.EmptyCatalogueException("There are no available contacts in the catalogue.");
         }
+
+        public void AssertContactIsUnique(IContactCatalogue contactCatalogue, Contact contact)
+        {
+            if (contactCatalogue.ContainsName(contact.Name))
+                throw new InvalidExceptions.DuplicateContactException($"A contact with the name '{contact.Name}' already exists.");
+
+            if (contactCatalogue.ContainsEmail(contact.Email))
+                throw new InvalidExceptions.DuplicateContactException($"A contact with the email '{contact.Email}' already exists.");
+        }
     }
 }

@@ -93,7 +93,7 @@ namespace Kontaktkatalogen.Menu
                     //Filter by tag option
                     case 4:
                         {
-                            //service.FilterByTag();
+                            service.FilterByTag();
                             break;
                         }
                     //Exit menu option

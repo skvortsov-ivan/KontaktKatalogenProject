@@ -12,5 +12,7 @@ namespace Kontaktkatalogen.Repositories
         int Count { get; }
         void Save(int id, Contact contact);
         public Dictionary<int, Contact> GetDictionary();
+        bool ContainsName(string name);
+        bool ContainsEmail(string email);
     }
 }

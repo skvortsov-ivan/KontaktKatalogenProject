@@ -35,6 +35,7 @@ namespace Kontaktkatalogen.Services
             try
             {
                 _contactValidator.Validate(contact);
+                _catalogueValidator.AssertContactIsUnique(_catalogue, contact);
                 _catalogue.Save(id, contact);
 
                 Console.SetCursorPosition(0, Console.WindowHeight - 5);
@@ -44,6 +45,12 @@ namespace Kontaktkatalogen.Services
                 Thread.Sleep(5);
             }
             catch (InvalidExceptions.InvalidContactException ex)
+            {
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                _logger.LogWarning("Validation failed: {Message}", ex.Message);
+                Thread.Sleep(5);
+            }
+            catch (InvalidExceptions.DuplicateContactException ex)
             {
                 Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogWarning("Validation failed: {Message}", ex.Message);
@@ -95,6 +102,7 @@ namespace Kontaktkatalogen.Services
 
         }
 
+        //LINQ methods are used in the following methods to acquire the sought data 
         public void SearchForContact()
         {
             try
@@ -105,16 +113,14 @@ namespace Kontaktkatalogen.Services
                 string searchName = Console.ReadLine();
 
                 if (string.IsNullOrWhiteSpace(searchName))
-                    throw new InvalidExceptions.InvalidContactException("Search name cannot be empty.");
+                    throw new InvalidExceptions.EmptyContactNameException("Search name cannot be empty.");
 
-                
                 var contactMatch = _catalogue.GetDictionary().Values.FirstOrDefault(c => c.Name.Equals(searchName));
                 
                 if (contactMatch == null)
-                    throw new InvalidExceptions.MissingContactExceptionException("The provided contact does not exist in the catalogue.");
+                    throw new InvalidExceptions.MissingContactException("The provided contact does not exist in the catalogue.");
 
-
-                Console.WriteLine($"Name: {contactMatch.Name} | Email: {contactMatch.Email} | Tags: {string.Join(", ", contactMatch.Tags)}");
+                Console.WriteLine($"Found contact:\nName: {contactMatch.Name} | Email: {contactMatch.Email} | Tags: {string.Join(", ", contactMatch.Tags)}");
                 Console.WriteLine("Press any key to continue\n>");
                 Console.ReadLine();
 
@@ -128,7 +134,13 @@ namespace Kontaktkatalogen.Services
                 _logger.LogWarning("Validation failed: {Message}", ex.Message);
                 Thread.Sleep(5);
             }
-            catch (InvalidExceptions.MissingContactExceptionException ex)
+            catch (InvalidExceptions.EmptyContactNameException ex)
+            {
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                _logger.LogWarning("Validation failed: {Message}", ex.Message);
+                Thread.Sleep(5);
+            }
+            catch (InvalidExceptions.MissingContactException ex)
             {
                 Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogWarning("Validation failed: {Message}", ex.Message);
@@ -142,9 +154,61 @@ namespace Kontaktkatalogen.Services
             }
         }
 
-        //public IEnumerable<Contact> FilterByDomain(string domain)
-        //{
-        //    return _catalogue.GetAll().Where(c => c.Email.EndsWith(domain));
-        //}
+        public void FilterByTag()
+        {
+            try
+            {
+                //Check if catalogue is empty
+                _catalogueValidator.Validate(_catalogue);
+
+                Console.WriteLine("Please enter the tag you would like to filter by:");
+                string searchTag = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(searchTag))
+                    throw new InvalidExceptions.EmptyContactTagException("Search tag cannot be empty.");
+
+                var matchingContacts = _catalogue.GetDictionary().Values.Where(c => c.Tags.Contains(searchTag)).ToList();
+
+                //Check if there are any contacts with the given tag
+                _contactValidator.ValidateTag(matchingContacts);
+
+                //Print out result
+                Console.WriteLine($"List of contacts with the tag '{searchTag}':\n");
+                foreach (var entry in matchingContacts)
+                {
+                    Console.WriteLine($"Name: {entry.Name} | Email: {entry.Email} | Tags: {string.Join(", ", entry.Tags)}");
+                }
+                Console.WriteLine("Press any key to continue\n>");
+                Console.ReadLine();
+
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                _logger.LogInformation("Filtered by tag and displayed associated contacts successfully");
+                Thread.Sleep(5);
+            }
+            catch (InvalidExceptions.EmptyCatalogueException ex)
+            {
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                _logger.LogWarning("Validation failed: {Message}", ex.Message);
+                Thread.Sleep(5);
+            }
+            catch (InvalidExceptions.EmptyContactTagException ex)
+            {
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                _logger.LogWarning("Validation failed: {Message}", ex.Message);
+                Thread.Sleep(5);
+            }
+            catch (InvalidExceptions.MissingTagException ex)
+            {
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                _logger.LogWarning("Validation failed: {Message}", ex.Message);
+                Thread.Sleep(5);
+            }
+            catch (Exception ex)
+            {
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                _logger.LogError(ex, "Unknown error occurred while attempting to search for a contact.");
+                Thread.Sleep(5);
+            }
+        }
     }
 }

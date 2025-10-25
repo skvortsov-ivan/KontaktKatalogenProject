@@ -10,8 +10,9 @@ namespace Kontaktkatalogen.ConsoleUI
     {
         public static int? DisplayandUseMenu(List<string> menuOptions, string welcomeText, bool simpleMenu)
         {
-            //Clear console
-            Console.Clear();
+            //Clear menu area
+            ClearMenuArea(0, Console.WindowHeight-10);
+            //Console.Clear();
 
             //Default selectedMenuOption is null for error handling
             int? selectedMenuOption = null;
@@ -25,9 +26,11 @@ namespace Kontaktkatalogen.ConsoleUI
                     return selectedMenuOption;
                 }
 
+                Console.SetCursorPosition(0, 0);
+
                 //If user chose to make menu without headline
                 if (simpleMenu)
-                {
+                { 
                     PositionWelcomeTextAndDeviders(welcomeText);
                     Console.WriteLine("");
                 }
@@ -40,7 +43,9 @@ namespace Kontaktkatalogen.ConsoleUI
             }
 
             //Clear console
-            Console.Clear();
+            ClearMenuArea(0, Console.WindowHeight - 10);
+            Console.SetCursorPosition(0, 0);
+            //Console.Clear();
 
             //Returning selected menu option
             return selectedMenuOption;

@@ -39,6 +39,7 @@ namespace Kontaktkatalogen.Menu
                     //Add a contact option
                     case 1:
                         {
+                            Console.Clear();
                             //Resetting taglist everytime a new contact is added
                             List<string> tagList = new List<string>();
                             
@@ -86,7 +87,7 @@ namespace Kontaktkatalogen.Menu
                     //Search for a contact option
                     case 3:
                         {
-                            //service.SearchForContact();
+                            service.SearchForContact();
                             break;
                         }
                     //Filter by tag option

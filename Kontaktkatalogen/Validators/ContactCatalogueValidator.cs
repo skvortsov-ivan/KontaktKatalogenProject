@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Kontaktkatalogen.Models;
 using Kontaktkatalogen.Repositories;
 
+
 namespace Kontaktkatalogen.Validators
 {
     public class ContactCatalogueValidator
@@ -13,7 +14,7 @@ namespace Kontaktkatalogen.Validators
         public void Validate(IContactCatalogue contactCatalogue)
         {
             if (contactCatalogue.Count == 0 || contactCatalogue == null)
-                throw new InvalidExceptions.InvalidEmptyCatalogueException("There are no available contacts in the catalogue.");
+                throw new InvalidExceptions.EmptyCatalogueException("There are no available contacts in the catalogue.");
         }
     }
 }

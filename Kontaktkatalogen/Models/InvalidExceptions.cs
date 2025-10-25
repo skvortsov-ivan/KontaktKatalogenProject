@@ -14,9 +14,19 @@ namespace Kontaktkatalogen.Models
             public InvalidContactException(string message) : base(message) { }
         }
 
-        public class InvalidEmptyCatalogueException : Exception
+        public class EmptyCatalogueException : Exception
         {
-            public InvalidEmptyCatalogueException(string message) : base(message) { }
+            public EmptyCatalogueException(string message) : base(message) { }
+        }
+
+        public class InvalidSearchNameException : Exception
+        {
+            public InvalidSearchNameException(string message) : base(message) { }
+        }
+
+        public class MissingContactExceptionException : Exception
+        {
+            public MissingContactExceptionException(string message) : base(message) { }
         }
     }
 }

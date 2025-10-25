@@ -10,6 +10,7 @@ namespace Kontaktkatalogen.Validators
 {
     public class ContactValidator
     {
+        //Exception if user input is faulty
         public void Validate(Contact contact)
         {
             if (string.IsNullOrWhiteSpace(contact.Name))
@@ -20,12 +21,6 @@ namespace Kontaktkatalogen.Validators
 
             if (contact.Tags == null || contact.Tags.Count == 0)
                 throw new InvalidExceptions.InvalidContactException("At least one tag is required.");
-        }
-
-        public void ValidateTag(List<Contact> contactList)
-        {
-            if (contactList.Count == 0)
-                throw new InvalidExceptions.MissingTagException("There are no contacts with this tag.");
         }
     }
 }

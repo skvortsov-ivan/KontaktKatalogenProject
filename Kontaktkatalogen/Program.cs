@@ -18,7 +18,7 @@ namespace Kontaktkatalogen
     {
         static void Main(string[] args)
         {
-            //Initiating logger, catalogue, validator and service
+            //Initiating logger, catalogue, validators and service
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddConsole();

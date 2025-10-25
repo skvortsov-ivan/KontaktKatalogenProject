@@ -13,7 +13,8 @@ namespace Kontaktkatalogen.Menu
     {
         public static void Menu(ContactService service)
         {
-            int contactId = 0;
+            //Starting contact Id
+            int contactId = 1;
 
             //Menu options for the main menu of the contact catalogue
             List<string> menuOptions = new List<string>
@@ -81,24 +82,28 @@ namespace Kontaktkatalogen.Menu
                     //List contacts option
                     case 2:
                         {
+                            Console.Clear();
                             service.ListContacts();
                             break;
                         }
                     //Search for a contact option
                     case 3:
                         {
+                            Console.Clear();
                             service.SearchForContact();
                             break;
                         }
                     //Filter by tag option
                     case 4:
                         {
+                            Console.Clear();
                             service.FilterByTag();
                             break;
                         }
                     //Exit menu option
                     case 0:
                         {
+                            Console.Clear();
                             Console.WriteLine("Thanks for using the Conctact Catalogue");
                             return;
                         }

@@ -18,7 +18,7 @@ namespace Kontaktkatalogen.tests
         [Fact]
         public void LogsWarning_WhenValidationFails()
         {
-            int contactId = 0;
+            int contactId = 1;
             var repoMock = new Mock<IContactCatalogue>();
             var loggerMock = new Mock<ILogger<ContactService>>();
             var contactValidator = new ContactValidator();
@@ -32,7 +32,7 @@ namespace Kontaktkatalogen.tests
                 x => x.Log(
                     LogLevel.Warning,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Validation error")),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Name is required.")),
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);

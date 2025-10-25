@@ -9,31 +9,32 @@ namespace Kontaktkatalogen.Repositories
 {
     public class ContactCatalogue : IContactCatalogue
     {
-        private Dictionary<int, Contact> _contacts = new Dictionary<int, Contact>();
+        //Catalogue dictionary
+        private Dictionary<int, Contact> _catalogue = new Dictionary<int, Contact>();
 
-        public int Count => _contacts.Count;
-        private HashSet<string> _names = new();
+        //Help counter for storing amount of contacts in catalogue
+        public int Count => _catalogue.Count;
+
+        //Help hashset to ensure there are not duplicate emails
         private HashSet<string> _emails = new();
 
+        //Saving contact to catalogue and associated email to the hashset
         public void Save(int id, Contact contact)
         {
-            _contacts[id] = contact;
-            _names.Add(contact.Name);
+            _catalogue[id] = contact;
             _emails.Add(contact.Email);
         }
+
+        //Method that returns catalogue
         public Dictionary<int, Contact> GetDictionary()
         {
-            return _contacts;
-        }
-        
-        public bool ContainsName(string name)
-        {
-            return _names.Contains(name);
+            return _catalogue;
         }
 
-        public bool ContainsEmail(string email)
+        //Method that attempts to add an email to the hashset
+        public bool TryAdd(string email)
         {
-            return _emails.Contains(email);
+            return _emails.Add(email);
         }
     }
 }

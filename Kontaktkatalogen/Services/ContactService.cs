@@ -15,13 +15,13 @@ namespace Kontaktkatalogen.Services
 
     public class ContactService
     {
+        //Private readonly fields for catalogue, validators and logger
         private readonly IContactCatalogue _catalogue;
         private readonly ContactValidator _contactValidator;
         private readonly ContactCatalogueValidator _catalogueValidator;
         private readonly ILogger<ContactService> _logger;
-        private static string _lastLogMessage = "";
-        private static ConsoleColor _lastLogColor = ConsoleColor.Gray;
 
+        //Constructor
         public ContactService(IContactCatalogue catalogue, ContactValidator contactValidator, ContactCatalogueValidator catalogueValidator, ILogger<ContactService> logger)
         {
             _catalogue = catalogue;
@@ -30,27 +30,31 @@ namespace Kontaktkatalogen.Services
             _logger = logger;
         }
 
+        //Add contact method
         public void AddContact(int id, Contact contact)
         {
             try
             {
+                //Validate input
                 _contactValidator.Validate(contact);
+
+                //Check if the contact is unique in regards to email
                 _catalogueValidator.AssertContactIsUnique(_catalogue, contact);
+
+                //Save contact
                 _catalogue.Save(id, contact);
 
+                //Chosing where to print all Log data as well as logging
                 Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogInformation("Contact '{Name}' has been saved successfully.", contact.Name);
-                //The most idiotic problem I have ever faced. For whatever reason, the LogWarning will not apprear in the correct place unless I include this pause.
-                //It's specifically the first I select a menu option. I'm very curious to find out why it works this way.
+                
+                //A must include in order to print all Log activities in the correct part of the console
                 Thread.Sleep(5);
             }
-            catch (InvalidExceptions.InvalidContactException ex)
-            {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
-                _logger.LogWarning("Validation failed: {Message}", ex.Message);
-                Thread.Sleep(5);
-            }
-            catch (InvalidExceptions.DuplicateContactException ex)
+            //If Validators throws an exception a log warning is issued
+            catch (Exception ex) when (
+            ex is InvalidExceptions.InvalidContactException ||
+            ex is InvalidExceptions.DuplicateContactException)
             {
                 Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogWarning("Validation failed: {Message}", ex.Message);
@@ -64,12 +68,15 @@ namespace Kontaktkatalogen.Services
             }
         }
 
+        //List contacts method
         public void ListContacts()
         {
             try
             {
+                //Check if catalogue is empty
                 _catalogueValidator.Validate(_catalogue);
 
+                //Print out result
                 Console.WriteLine("List of saved contacts:\n");
 
                 foreach (var entry in _catalogue.GetDictionary())
@@ -102,45 +109,48 @@ namespace Kontaktkatalogen.Services
 
         }
 
-        //LINQ methods are used in the following methods to acquire the sought data 
+        //Search for contact method. It includes LINQ
         public void SearchForContact()
         {
             try
             {
+                //Check if catalogue is empty
                 _catalogueValidator.Validate(_catalogue);
 
                 Console.WriteLine("Please enter the name of the contact:");
                 string searchName = Console.ReadLine();
+                Console.Clear();
 
+                //Throw an exception if input is empty
                 if (string.IsNullOrWhiteSpace(searchName))
                     throw new InvalidExceptions.EmptyContactNameException("Search name cannot be empty.");
 
-                var contactMatch = _catalogue.GetDictionary().Values.FirstOrDefault(c => c.Name.Equals(searchName));
-                
-                if (contactMatch == null)
+                //Acquiring all contacts with the provided name 
+                var matchingContacts = _catalogue.GetDictionary().Values.Where(c => c.Name.Equals(searchName)).ToList();
+
+                //Throw an exception if there are no contacts with the provided name
+                if (matchingContacts == null)
                     throw new InvalidExceptions.MissingContactException("The provided contact does not exist in the catalogue.");
 
-                Console.WriteLine($"Found contact:\nName: {contactMatch.Name} | Email: {contactMatch.Email} | Tags: {string.Join(", ", contactMatch.Tags)}");
-                Console.WriteLine("Press any key to continue\n>");
+                //Print out result
+                Console.WriteLine($"Found contacts contacts with the name: {searchName}\n");
+                foreach (var entry in matchingContacts)
+                {
+                    Console.WriteLine($"\nName: {entry.Name} | Email: {entry.Email} | Tags: {string.Join(", ", entry.Tags)}");
+                    Console.WriteLine("-----------------------------");
+                }
+                
+                Console.WriteLine("\nPress any key to continue\n>");
                 Console.ReadLine();
 
                 Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogInformation("Contact found and displayed successfully");
                 Thread.Sleep(5);
             }
-            catch (InvalidExceptions.EmptyCatalogueException ex)
-            {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
-                _logger.LogWarning("Validation failed: {Message}", ex.Message);
-                Thread.Sleep(5);
-            }
-            catch (InvalidExceptions.EmptyContactNameException ex)
-            {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
-                _logger.LogWarning("Validation failed: {Message}", ex.Message);
-                Thread.Sleep(5);
-            }
-            catch (InvalidExceptions.MissingContactException ex)
+            catch (Exception ex) when (
+            ex is InvalidExceptions.EmptyCatalogueException ||
+            ex is InvalidExceptions.EmptyContactNameException ||
+            ex is InvalidExceptions.MissingContactException)
             {
                 Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogWarning("Validation failed: {Message}", ex.Message);
@@ -154,6 +164,7 @@ namespace Kontaktkatalogen.Services
             }
         }
 
+        //Filter by tag method. It includes LINQ
         public void FilterByTag()
         {
             try
@@ -167,10 +178,8 @@ namespace Kontaktkatalogen.Services
                 if (string.IsNullOrWhiteSpace(searchTag))
                     throw new InvalidExceptions.EmptyContactTagException("Search tag cannot be empty.");
 
-                var matchingContacts = _catalogue.GetDictionary().Values.Where(c => c.Tags.Contains(searchTag)).ToList();
-
                 //Check if there are any contacts with the given tag
-                _contactValidator.ValidateTag(matchingContacts);
+                var matchingContacts = _catalogueValidator.ValidateTag(_catalogue, searchTag);
 
                 //Print out result
                 Console.WriteLine($"List of contacts with the tag '{searchTag}':\n");
@@ -185,19 +194,10 @@ namespace Kontaktkatalogen.Services
                 _logger.LogInformation("Filtered by tag and displayed associated contacts successfully");
                 Thread.Sleep(5);
             }
-            catch (InvalidExceptions.EmptyCatalogueException ex)
-            {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
-                _logger.LogWarning("Validation failed: {Message}", ex.Message);
-                Thread.Sleep(5);
-            }
-            catch (InvalidExceptions.EmptyContactTagException ex)
-            {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
-                _logger.LogWarning("Validation failed: {Message}", ex.Message);
-                Thread.Sleep(5);
-            }
-            catch (InvalidExceptions.MissingTagException ex)
+            catch (Exception ex) when (
+                ex is InvalidExceptions.EmptyCatalogueException ||
+                ex is InvalidExceptions.EmptyContactTagException ||
+                ex is InvalidExceptions.MissingTagException)
             {
                 Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogWarning("Validation failed: {Message}", ex.Message);

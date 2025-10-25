@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Kontaktkatalogen.Models
 {
+    //Contact class with the fields: name, email and a list of tags
     public class Contact
     {
         public string Name { get; set; }

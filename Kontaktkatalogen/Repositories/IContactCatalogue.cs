@@ -9,10 +9,9 @@ namespace Kontaktkatalogen.Repositories
 {
     public interface IContactCatalogue
     {
+        public Dictionary<int, Contact> GetDictionary();
         int Count { get; }
         void Save(int id, Contact contact);
-        public Dictionary<int, Contact> GetDictionary();
-        bool ContainsName(string name);
-        bool ContainsEmail(string email);
+        bool TryAdd(string email);
     }
 }

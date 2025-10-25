@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Kontaktkatalogen.Models;
+using Kontaktkatalogen.Repositories;
 
 namespace Kontaktkatalogen.Validators
 {
@@ -19,6 +20,12 @@ namespace Kontaktkatalogen.Validators
 
             if (contact.Tags == null || contact.Tags.Count == 0)
                 throw new InvalidExceptions.InvalidContactException("At least one tag is required.");
+        }
+
+        public void ValidateTag(List<Contact> contactList)
+        {
+            if (contactList.Count == 0)
+                throw new InvalidExceptions.MissingTagException("There are no contacts with this tag.");
         }
     }
 }

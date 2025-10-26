@@ -5,13 +5,8 @@ using Kontaktkatalogen.Repositories;
 using Kontaktkatalogen.Services;
 using Kontaktkatalogen.Validators;
 using Microsoft.Extensions.Logging;
-// Besvara:
-// Varför valde du dictionary <int, Contact>?
-// Hur hjälper HashSet<<string> till att undvika dubletter?
-// Vad lärde du om LINQ och testbar kod?
 
-//A dictionary was used to save contact id as key and the contact class as value to simplify the implementation of the "list contacts" feature.
-
+//Contact catalogue main
 namespace Kontaktkatalogen
 {
     internal class Program

@@ -44,8 +44,10 @@ namespace Kontaktkatalogen.Services
                 //Save contact
                 _catalogue.Save(id, contact);
 
-                //Chosing where to print all Log data as well as logging
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                //This if statement is required in order for moq to work properly
+                if (!Console.IsOutputRedirected)
+                    //Chosing where to print all Log data as well as logging
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogInformation("Contact '{Name}' has been saved successfully.", contact.Name);
                 
                 //A must include in order to print all Log activities in the correct part of the console
@@ -56,13 +58,15 @@ namespace Kontaktkatalogen.Services
             ex is InvalidExceptions.InvalidContactException ||
             ex is InvalidExceptions.DuplicateContactException)
             {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogWarning("Validation failed: {Message}", ex.Message);
                 Thread.Sleep(5);
             }
             catch (Exception ex)
             {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogError(ex, "Unknown error occurred while attempting to save contact.");
                 Thread.Sleep(5);
             }
@@ -74,7 +78,7 @@ namespace Kontaktkatalogen.Services
             try
             {
                 //Check if catalogue is empty
-                _catalogueValidator.Validate(_catalogue);
+                _catalogueValidator.AssertCatalogueNotEmpty(_catalogue);
 
                 //Print out result
                 Console.WriteLine("List of saved contacts:\n");
@@ -90,19 +94,22 @@ namespace Kontaktkatalogen.Services
                 Console.WriteLine("Press any key to continue\n>");
                 Console.ReadLine();
 
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogInformation("Contact list displayed successfully");
                 Thread.Sleep(5);
             }
             catch (InvalidExceptions.EmptyCatalogueException ex)
             {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogWarning("Validation failed: {Message}", ex.Message);
                 Thread.Sleep(5);
             }
             catch (Exception ex)
             {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogError(ex, "Unknown error occurred while attempting to list contacts.");
                 Thread.Sleep(5);
             }
@@ -115,7 +122,7 @@ namespace Kontaktkatalogen.Services
             try
             {
                 //Check if catalogue is empty
-                _catalogueValidator.Validate(_catalogue);
+                _catalogueValidator.AssertCatalogueNotEmpty(_catalogue);
 
                 Console.WriteLine("Please enter the name of the contact:");
                 string searchName = Console.ReadLine();
@@ -143,7 +150,8 @@ namespace Kontaktkatalogen.Services
                 Console.WriteLine("\nPress any key to continue\n>");
                 Console.ReadLine();
 
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogInformation("Contact found and displayed successfully");
                 Thread.Sleep(5);
             }
@@ -152,13 +160,15 @@ namespace Kontaktkatalogen.Services
             ex is InvalidExceptions.EmptyContactNameException ||
             ex is InvalidExceptions.MissingContactException)
             {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogWarning("Validation failed: {Message}", ex.Message);
                 Thread.Sleep(5);
             }
             catch (Exception ex)
             {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogError(ex, "Unknown error occurred while attempting to search for a contact.");
                 Thread.Sleep(5);
             }
@@ -170,13 +180,14 @@ namespace Kontaktkatalogen.Services
             try
             {
                 //Check if catalogue is empty
-                _catalogueValidator.Validate(_catalogue);
+                _catalogueValidator.AssertCatalogueNotEmpty(_catalogue);
 
                 Console.WriteLine("Please enter the tag you would like to filter by:");
                 string searchTag = Console.ReadLine();
 
                 if (string.IsNullOrWhiteSpace(searchTag))
                     throw new InvalidExceptions.EmptyContactTagException("Search tag cannot be empty.");
+
 
                 //Check if there are any contacts with the given tag
                 var matchingContacts = _catalogueValidator.ValidateTag(_catalogue, searchTag);
@@ -190,7 +201,8 @@ namespace Kontaktkatalogen.Services
                 Console.WriteLine("Press any key to continue\n>");
                 Console.ReadLine();
 
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogInformation("Filtered by tag and displayed associated contacts successfully");
                 Thread.Sleep(5);
             }
@@ -199,13 +211,15 @@ namespace Kontaktkatalogen.Services
                 ex is InvalidExceptions.EmptyContactTagException ||
                 ex is InvalidExceptions.MissingTagException)
             {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogWarning("Validation failed: {Message}", ex.Message);
                 Thread.Sleep(5);
             }
             catch (Exception ex)
             {
-                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+                if (!Console.IsOutputRedirected)
+                    Console.SetCursorPosition(0, Console.WindowHeight - 5);
                 _logger.LogError(ex, "Unknown error occurred while attempting to search for a contact.");
                 Thread.Sleep(5);
             }

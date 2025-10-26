@@ -11,17 +11,36 @@ namespace Kontaktkatalogen.tests
 {
     public class ContactValidatorTests
     {
+
+        //Testing ContactValidator with valid contact
         [Fact]
-        public void Given_Email_When_Validated_Should_ThrowExceptionWhenEmailIsInvalid()
+        public void Given_ValidContact_When_Validated_Should_NotThrowException()
         {
             var validator = new ContactValidator();
-            var contact1 = new Contact { Name = "Bob", Email = "Bob[at]gmail.com" };
+            var contact = new Contact
+            {
+                Name = "Test",
+                Email = "test@example.com",
+                Tags = new List<string> { "Work" }
+            };
 
-            //Assert.Throws<InvalidContactException>(() => validator.Validate(contact1));
+            //Should not throw exception
+            validator.Validate(contact); // Should not throw
+        }
 
-            var contact2 = new Contact { Name = "Bob", Email = "" };
+        //Testing ContactValidator with each field being empty
+        [Fact]
+        public void Given_InvalidContactFields_When_Validated_Should_ThrowException()
+        {
+            var validator = new ContactValidator();
 
-            Assert.Throws<InvalidContactException>(() => validator.Validate(contact2));
+            var invalidName = new Contact { Name = "", Email = "test@example.com", Tags = new List<string> { "Work" } };
+            var invalidEmail = new Contact { Name = "Test", Email = "", Tags = new List<string> { "Work" } };
+            var invalidTags = new Contact { Name = "Test", Email = "test@example.com", Tags = new List<string>() };
+
+            Assert.Throws<InvalidExceptions.InvalidContactException>(() => validator.Validate(invalidName));
+            Assert.Throws<InvalidExceptions.InvalidContactException>(() => validator.Validate(invalidEmail));
+            Assert.Throws<InvalidExceptions.InvalidContactException>(() => validator.Validate(invalidTags));
         }
     }
 }

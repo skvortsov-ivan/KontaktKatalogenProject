@@ -184,6 +184,7 @@ namespace Kontaktkatalogen.Services
 
                 Console.WriteLine("Please enter the tag you would like to filter by:");
                 string searchTag = Console.ReadLine();
+                Console.Clear();
 
                 if (string.IsNullOrWhiteSpace(searchTag))
                     throw new InvalidExceptions.EmptyContactTagException("Search tag cannot be empty.");

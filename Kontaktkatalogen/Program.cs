@@ -7,6 +7,7 @@ using Kontaktkatalogen.Validators;
 using Microsoft.Extensions.Logging;
 
 //Contact catalogue main
+//For further details regarding choice of solution please take a look in the ReadMe.
 namespace Kontaktkatalogen
 {
     internal class Program
